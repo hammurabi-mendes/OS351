@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2017, Hammurabi Mendes.
+ * License: BSD 2-clause
+ *
+ * For copyright and credits, please refer to the corresponding files
+ * in the project's root directory.
+ */
 #ifndef STDARG_H
 #define STDARG_H
 
