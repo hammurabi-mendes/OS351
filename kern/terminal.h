@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2017, Hammurabi Mendes.
+ * License: BSD 2-clause
+ *
+ * For copyright and credits, please refer to the corresponding files
+ * in the project's root directory.
+ */
 #ifndef TERMINAL_H
 #define TERMINAL_H
 

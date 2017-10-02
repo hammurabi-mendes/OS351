@@ -1,3 +1,9 @@
+; Copyright (c) 2017, Hammurabi Mendes.
+; License: BSD 2-clause
+;
+; For copyright and credits, please refer to the corresponding files
+; in the project's root directory.
+
 ; This task switch mechanism is similar to the idea used by eduOS,
 ; where we create a fake interrupt stack and restore context using iretq
 
