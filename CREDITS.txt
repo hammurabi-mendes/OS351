@@ -1,0 +1,16 @@
+Developing this project would not have been possible without the excellent tutorials, blog posts, and software initiatives noted below. Thank you authors for all your effort in putting this material freely accessible through the web.
+
+Bran's Kernel Development Tutorial
+http://www.osdever.net/bkerndev/Docs/title.htm (Aug 2017)
+
+JamesM's Kernel Development Tutorials
+http://www.jamesmolloy.co.uk/tutorial_html/ (Aug 2017)
+
+eduOS -- RWTH Aachen University
+https://github.com/RWTH-OS/eduOS (Aug 2017)
+
+Writing an OS in Rust -- Philipp Oppermann's blog
+https://os.phil-opp.com/
+
+OSDev community
+http://wiki.osdev.org/Main_Page

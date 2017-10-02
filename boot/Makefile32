@@ -1,0 +1,9 @@
+OBJECTS = loader32.o
+
+all: $(OBJECTS)
+
+loader32.o: loader32.s
+	$(AS) $(ASFLAGS) loader32.s
+
+clean:
+	rm -f *.o
