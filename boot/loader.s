@@ -133,15 +133,16 @@ check_long_mode:
 	jmp error
 
 init_page_tables:
-	; P4's first entry is p3_table
-	mov eax, p3_table
-	; Set present and writable bits
-	or eax, 0b11
-	mov [p4_table], eax
+	; Some initialization has been defined in the data section already - take a look
 
-	; P3's first entry is a huge (1GB) page starting at 2MB
+	; P4's last entry is a self reference
+	mov eax, p4_table
+	; Set present, writable, and self-reference bits
+	or eax, 0b1000000011
+	mov [p4_table + (511 * 8)], eax
+
+	; P3's first entry is a huge (1GB) page
 	mov eax, 0x0
-
 	; Set present, writable, and huge-page bits
 	or eax, 0b10000011
 	mov [p3_table], eax
@@ -202,10 +203,10 @@ black_hole:
 	jmp black_hole
 
 error:
-	mov dword [0xB8000], 0x4f524f45
-	mov dword [0xB8004], 0x4f3a4f52
-	mov dword [0xB8008], 0x4f204f20
-	mov byte  [0xB800A], al
+	mov dword [0xb8000], 0x4f524f45
+	mov dword [0xb8004], 0x4f3a4f52
+	mov dword [0xb8008], 0x4f204f20
+	mov byte  [0xb800a], al
 	jmp black_hole
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -215,22 +216,15 @@ error:
 section .data
 	align 4096
 
-; For all but the last page table,
-; the first entry has the present (first bit) and writable (second bit) are set
-; the last entry has the self-refernce (10th bit), present (first bit) and writable (second bit) are set
 p4_table:
   dq (p3_table + 0b11)
-  times 510 dq 0
-  dq p4_table + 0b1000000011
-
+  times 511 dq 0
 p3_table:
   dq (p2_table + 0b11)
-  times 510 dq 0
-  dq p4_table + 0b1000000011
+  times 511 dq 0
 p2_table:
   dq (p1_table + 0b11)
-  times 510 dq 0
-  dq p4_table + 0b1000000011
+  times 511 dq 0
 p1_table:
   times 512 dq 0
 
