@@ -14,11 +14,11 @@
 
 #define MAX_THREADS 128
 
-#define STACK_SIZE 65536
+#define STACK_SIZE 4092
 
 static tcb_t thread_context[MAX_THREADS];
 
-static char thread_stack[MAX_THREADS][STACK_SIZE];
+static char thread_stack[MAX_THREADS][STACK_SIZE] __attribute__((aligned(16)));
 
 tcb_t *current_thread_context = NULL;
 
@@ -80,18 +80,19 @@ int thread_create(void *(*function)(void *), void *argument) {
 	new_context->state = STATE_ACTIVE;
 	new_context->joiner_thread_number = -1;
 
-	// TODO: take the 16 off
-	new_context->stack = &thread_stack[chosen_position][4096 - 16];
+	new_context->stack = &thread_stack[chosen_position][STACK_SIZE - 16];
 
 	setup_context(new_context);
 
-	return 0;
+	return chosen_position;
 }
 
 void thread_switch(tcb_t *old_context, tcb_t *new_context) {
 	current_thread_context = new_context;
 
-	switch_context(&(old_context->stack), new_context->stack);
+	if(old_context->number != new_context->number) {
+		switch_context(&(old_context->stack), new_context->stack);
+	}
 }
 
 int thread_yield(void) {

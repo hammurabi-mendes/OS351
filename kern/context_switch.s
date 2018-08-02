@@ -14,7 +14,9 @@ extern print_interrupt_state
 
 global prepare_context
 align 16
-; rdi rsi rdx rcx, r8, r9
+; parameters: rdi rsi rdx rcx, r8, r9
+; caller saved: rax, rcx, rdx, r8, r9, r10, r11
+;
 ; rdi: &(task->stack)
 ; rsi; code
 ; rdx: data
@@ -24,7 +26,7 @@ prepare_context:
 
     push qword 0x10   ; ss
     push qword [rdi]  ; rsp (1st parameter, derefernced)
-    push qword 0x1202 ; RFLAGS
+    push qword 0x0202 ; RFLAGS
     push qword 0x08   ; cs
     push rsi          ; rip (2nd parameter)
     push qword 0x00   ; Error code
@@ -55,15 +57,16 @@ prepare_context:
 
 global switch_context
 align 16
-; rdi rsi rdx rcx, r8, r9
+; parameters: rdi rsi rdx rcx, r8, r9
+; caller saved: rax, rcx, rdx, r8, r9, r10, r11
+;
 ; rdi: &(old_context->stack)
 ; rsi; new_context->stack
 switch_context:
-    mov rax, rsp                     ; Save stack in rax
-    mov rsp, [rdi]                   ; Change temporarily to the new stack
+    mov rcx, rsp                     ; Save stack in rcx
 
     push qword 0x10                  ; ss
-    push qword rax                   ; rsp (1st parameter)
+    push qword rcx                   ; rsp (1st parameter)
     pushf                            ; RFLAGS
     push qword 0x08                  ; cs
     push qword return_switch_context ; rip
@@ -94,14 +97,16 @@ switch_stack:
     ; Store current rsp into the old tasks's stack
     mov [rdi], rsp
 
-	mov rdi, rsp
-	call print_interrupt_state
+    ; Uncomment this to print state of interrupt registers
+	; mov rdi, rsp
+	; call print_interrupt_state
 
     ; Set the new tasks's stack as the current stack
     mov rsp, rsi
 
-	mov rdi, rsp
-	call print_interrupt_state
+    ; Uncomment this to print state of interrupt registers
+	; mov rdi, rsp
+	; call print_interrupt_state
 
     ; Set the TS bit in CR0
     mov rcx, cr0

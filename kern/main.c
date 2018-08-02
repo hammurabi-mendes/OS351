@@ -12,6 +12,45 @@
 #include "interrupts.h"
 #include "threads.h"
 
+char stack[12288] __attribute__((aligned(16)));
+
+void *function1(void *argument) {
+    while(1) {
+        printf("Hola! ");
+        thread_yield();
+    }
+
+    return NULL;
+}
+
+void *function2(void *argument) {
+    while(1) {
+        printf("Aloha! ");
+        thread_yield();
+    }
+
+    return NULL;
+}
+
+void loop() {
+    while(1) {
+        printf("Loop ");
+    }
+}
+
 int main(void) {
-	while(1) {} // Spin!
+    terminal_clear();
+    printf("Hello World!");
+
+    interrupts_init();
+    start_timer(1000);
+
+    threading_init();
+    int tid1 = thread_create(function1, NULL);
+    int tid2 = thread_create(function2, NULL);
+
+    thread_join(tid1);
+    thread_join(tid2);
+
+    loop();
 }
